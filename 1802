@@ -20,7 +20,7 @@ class Player(object):
         self.y = y
         self.radius = 20
 
-    def update(self, key):
+    def update(self, key, e_list):
         old_x = self.x
         old_y = self.y
         dy = 0
@@ -28,21 +28,31 @@ class Player(object):
         
         # Player Movement
         if key[pygame.K_w]:
-            dy -= 1
+            dy -= 3
         if key[pygame.K_a]:
-            dx -= 1
+            dx -= 3
         if key[pygame.K_s]:
-            dy += 1
+            dy += 3
         if key[pygame.K_d]:
-            dx += 1
+            dx += 3
 
         # Collision
         self.x += dx
         self.y += dy
-        if self.radius >= self.x or  self.x <= 800 + self.radius:
+        if self.radius >= self.x or self.x >= 800 - self.radius:
             self.x = old_x
-        if self.radius >= self.y or  self.y <= 600 + self.radius:
+        if self.radius >= self.y or self.y >= 600 - self.radius:
             self.y = old_y
+
+        # Dots
+        removal_list = []
+        for e in e_list:
+            if (((e.x - self.x) ** 2) + ((e.y - self.y) ** 2)) ** 0.5 <= e.radius + self.radius:
+                removal_list.append(e)
+        for x in removal_list:
+            e_list.remove(x)
+        return e_list
+            
 
     def render(self):
         pygame.draw.circle(window, yellow, (self.x, self.y), self.radius, 0)
@@ -69,7 +79,6 @@ yellow = (255, 255, 0)
 # Entities
 entity_list = []
 player = Player(400, 300)
-entity_list.append(player)
 for dot in range(25):
     create_dot(entity_list)
 
@@ -81,10 +90,12 @@ while Running:
     keys = pygame.key.get_pressed()
 
     # Entities
-    player.update(keys)
+    entity_list = player.update(keys, entity_list)
 
     # INPUT
     # Quit
+    if len(entity_list) == 0:
+        Running = False
     if event.type == pygame.QUIT:
         Running = False
     if keys[pygame.K_ESCAPE]:
@@ -94,12 +105,10 @@ while Running:
     window.fill(black)
 
     # Entities
+    player.render()
     for entity in entity_list:
         entity.render()
 
     pygame.display.flip()
     
-pygame.quit
-
-    
-
+pygame.quit()
