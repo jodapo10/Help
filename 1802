@@ -5,40 +5,53 @@ import math
 pygame.init()
 
 # Classes
-class Entity(object):
+class Dot(object):
     def __init__(self, x, y):
         self.x = x
         self.y = y
         self.radius = 5
-        entity_list.append
-
-    def update():
-        pass
-
-    def render():
-        pass
-
-class Dot(Entity):
-    def render():
+    
+    def render(self):
         pygame.draw.circle(window, white, (self.x, self.y), self.radius, 0)
 
-class Player(Entity):
+class Player(object):
     def __init__(self, x, y):
-        super.__init__(self, x, y)
-        self.player= True
+        self.x = x
+        self.y = y
         self.radius = 20
 
-    def update():
-        pass
+    def update(self, key):
+        old_x = self.x
+        old_y = self.y
+        dy = 0
+        dx = 0
+        
+        # Player Movement
+        if key[pygame.K_w]:
+            dy -= 1
+        if key[pygame.K_a]:
+            dx -= 1
+        if key[pygame.K_s]:
+            dy += 1
+        if key[pygame.K_d]:
+            dx += 1
 
-    def render():
+        # Collision
+        self.x += dx
+        self.y += dy
+        if self.radius >= self.x or  self.x <= 800 + self.radius:
+            self.x = old_x
+        if self.radius >= self.y or  self.y <= 600 + self.radius:
+            self.y = old_y
+
+    def render(self):
         pygame.draw.circle(window, yellow, (self.x, self.y), self.radius, 0)
 
 # FUNCTIONS
-def create_dot():
+def create_dot(e_list):
     x = random.randint(5, 795)
     y = random.randint(5, 595)
-    Dot(x, y)
+    e_list.append(Dot(x, y))
 
 # VARIABLES
 Running = True
@@ -54,8 +67,11 @@ black = (0, 0, 0)
 yellow = (255, 255, 0)
 
 # Entities
-entities_list = []
+entity_list = []
 player = Player(400, 300)
+entity_list.append(player)
+for dot in range(25):
+    create_dot(entity_list)
 
 # GAME LOOP
 while Running:
@@ -65,17 +81,23 @@ while Running:
     keys = pygame.key.get_pressed()
 
     # Entities
-    player.update()
+    player.update(keys)
 
     # INPUT
     # Quit
     if event.type == pygame.QUIT:
         Running = False
+    if keys[pygame.K_ESCAPE]:
+        Running = False
 
     # RENDER
     window.fill(black)
 
-    pygame.display.update()
+    # Entities
+    for entity in entity_list:
+        entity.render()
+
+    pygame.display.flip()
     
 pygame.quit
 
