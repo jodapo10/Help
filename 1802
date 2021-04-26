@@ -1,0 +1,83 @@
+import pygame
+import random
+import math
+
+pygame.init()
+
+# Classes
+class Entity(object):
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.radius = 5
+        entity_list.append
+
+    def update():
+        pass
+
+    def render():
+        pass
+
+class Dot(Entity):
+    def render():
+        pygame.draw.circle(window, white, (self.x, self.y), self.radius, 0)
+
+class Player(Entity):
+    def __init__(self, x, y):
+        super.__init__(self, x, y)
+        self.player= True
+        self.radius = 20
+
+    def update():
+        pass
+
+    def render():
+        pygame.draw.circle(window, yellow, (self.x, self.y), self.radius, 0)
+
+# FUNCTIONS
+def create_dot():
+    x = random.randint(5, 795)
+    y = random.randint(5, 595)
+    Dot(x, y)
+
+# VARIABLES
+Running = True
+clock = pygame.time.Clock()
+
+# Window Variables
+window_size = [800, 600]
+window = pygame.display.set_mode(window_size)
+
+# Color Variables
+white = (255, 255, 255)
+black = (0, 0, 0)
+yellow = (255, 255, 0)
+
+# Entities
+entities_list = []
+player = Player(400, 300)
+
+# GAME LOOP
+while Running:
+    # UPDATE
+    clock.tick(60)
+    event = pygame.event.poll()
+    keys = pygame.key.get_pressed()
+
+    # Entities
+    player.update()
+
+    # INPUT
+    # Quit
+    if event.type == pygame.QUIT:
+        Running = False
+
+    # RENDER
+    window.fill(black)
+
+    pygame.display.update()
+    
+pygame.quit
+
+    
+
